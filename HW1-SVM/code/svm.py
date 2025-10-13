@@ -12,6 +12,11 @@ X_imgs_test, X_attrs_test, Y_test = data.get_test_data()
 X_train = X_attrs_train
 X_test = X_attrs_test
 
+# TODO: 选择原始图片作为分类依据
+# 提示: 单张图片的原始形状是[H, W, 3]，需将其转换成一维特征再利用SVM分类
+X_train = X_imgs_train.reshape(X_imgs_train.shape[0], -1)
+X_test = X_imgs_test.reshape(X_imgs_test.shape[0], -1)
+
 # 标准化训练集和测试集
 sc = StandardScaler()               # 定义一个标准缩放器
 sc.fit(X_train)                     # 计算均值、标准差
