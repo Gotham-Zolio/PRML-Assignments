@@ -5,8 +5,10 @@ import numpy as np
 class Dataset:
 
     def __init__(self, datapath):
+        if not os.path.isabs(datapath):
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            datapath = os.path.normpath(os.path.join(base_dir, datapath))
         self.datapath = datapath
-
         with open(os.path.join(datapath, 'celeba_filtered.txt'), 'r') as f:
             id_filename_attribute = f.readlines()
         self.attributeNames = id_filename_attribute[0].split()[2:]
