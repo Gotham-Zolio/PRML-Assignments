@@ -14,9 +14,8 @@ X_test = X_attrs_test
 
 # TODO: 选择原始图片作为分类依据
 # 提示: 单张图片的原始形状是[H, W, 3]，需将其转换成一维特征再利用SVM分类
-'''
-    请补全相关代码
-'''
+X_train = X_imgs_train.reshape(X_imgs_train.shape[0], -1)
+X_test = X_imgs_test.reshape(X_imgs_test.shape[0], -1)
 
 # 标准化训练集和测试集
 sc = StandardScaler()               # 定义一个标准缩放器
@@ -26,10 +25,7 @@ X_test_std  = sc.transform(X_test)  # 使用计算出的均值和标准差进行
 
 # TODO: 训练支持向量机
 # 提示: 
-'''
-    请补全下方对SVC模型的定义, 包括核函数、软间隔惩罚项的系数等
-'''
-svm = SVC()                         # 定义线性支持向量分类器 (linear为线性核函数)
+svm = SVC(kernel = "linear", C = 1.0)        # 定义线性支持向量分类器 (linear为线性核函数)
 svm.fit(X_train_std, Y_train)       # 根据给定的训练数据拟合训练SVM模型
 
 # 使用测试集进行数据预测
