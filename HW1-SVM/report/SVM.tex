@@ -1,0 +1,329 @@
+% !Tex program = pdflatex
+
+\documentclass[UTF8]{ctexart}
+\CTEXsetup[format={\Large\bfseries}]{section}
+\usepackage{amsmath}
+\usepackage{ctex}
+\usepackage{array}
+\usepackage{ulem}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{multirow}
+\usepackage{subfig}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{pgfplots}
+\usepackage{diagbox}
+\usepackage{indentfirst}
+\setlength {\parindent} {2em} 
+% small vertical space between paragraphs for readability
+\setlength{\parskip}{0.6em}
+\usepackage{makecell}
+\geometry{papersize={21cm,29.7cm}}
+\geometry{left=2.54cm,right=2.54cm,top=3.18cm,bottom=3.18cm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\today}
+\chead{}
+\rhead{2023012274}
+\lfoot{清华大学}
+\cfoot{\thepage}
+\rfoot{模式识别与机器学习}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headwidth}{\textwidth}
+\renewcommand{\footrulewidth}{0pt}
+\usepackage{bm}
+% listings style for code snippets
+\lstset{
+    backgroundcolor=\color{white},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    framesep=4pt,
+    frame=single,
+    rulecolor=\color{gray!40},
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray!60}\itshape,
+    showstringspaces=false,
+}
+
+\begin{document}
+\begin{titlepage}
+     \begin{center}
+        \quad \\
+        \quad \\
+        \quad \\
+        \quad \\
+        \quad \\
+        \quad \\
+        \quad \\
+        \quad \\ 
+        \quad \\ 
+        {\kaishu \fontsize{30}{15}\selectfont 《模式识别与机器学习》}\\
+        \quad \\
+        \quad \\
+        {\kaishu \fontsize{30}{15}\selectfont 实验：SVM 图像分类}\\
+
+        \end{center}
+        \vskip 8cm
+
+        \begin{center}
+        \begin{large}
+        \begin{tabular}{cc}
+        院\qquad 系:& ~~~~~~~~自动化系~~~~~~~~      \\
+        \cline{2-2}\\
+        班\qquad 级:& 自31班   \\
+        \cline{2-2}\\
+        学生姓名:& 苟左    \\
+        \cline{2-2}\\
+        学\qquad 号:&2023012274   \\
+        \cline{2-2}
+          \end{tabular}
+        \end{large}
+      \end{center}
+
+\end{titlepage}
+\newpage
+
+\section{实验目的}
+\begin{enumerate}
+    \item 理解支持向量机(SVM) 的基本原理与超参数含义（尤其是惩罚参数 $C$ 和核函数参数）。
+    \item 在给定的人脸数据集上实现基于属性与基于原始像素的 SVM 分类，并比较两种特征表示的性能差异。
+    \item 学习如何使用标准化、降维与核函数调参来提升分类器的泛化能力。
+\end{enumerate}
+
+\section{实验任务与方法}
+
+\subsection{数据与任务}
+本实验使用提供的 \texttt{celeba} 子集，分为训练/测试两个子集（由 \texttt{partition.txt} 指定）。数据集包含：
+\begin{itemize}
+    \item 训练样本：250 张人脸图像
+    \item 测试样本：50 张人脸图像
+    \item 分类任务：10 类人脸识别（标签映射见 \texttt{dataset.py} 中 \texttt{label\_mapping}）
+    \item 特征：40 维人脸属性特征 + 原始像素（$218 \times 178 \times 3 = 116412$ 维）
+\end{itemize}
+
+\subsection{实现要点（对应 \texttt{svm.py} 中 TODO）}
+\begin{enumerate}
+    \item \textbf{特征选取}：
+    \begin{itemize}
+        \item 属性特征（\texttt{X\_attrs}）：直接使用 40 维人脸属性作为低维输入
+        \item 原始图片（\texttt{X\_imgs}）：将 $[H, W, 3]$ 展平成一维向量，或先做降维/特征提取
+    \end{itemize}
+    
+    \item \textbf{数据预处理}：使用 \texttt{StandardScaler} 进行零均值单位方差标准化，消除不同特征维度的量纲差异
+    
+    \item \textbf{模型训练}：使用 sklearn 的 \texttt{SVC} 线性核，通过网格搜索优化惩罚参数 $C$
+\end{enumerate}
+
+\section{实验实现与代码片段}
+
+\subsection{基础 SVM 分类器实现（svm.py）}
+下面摘录 \texttt{code/svm.py} 中关键实现。TODO 部分：特征选择和 SVM 训练。
+
+\begin{lstlisting}[language=Python, caption=svm.py 核心代码片段]
+# 构建数据集
+data = Dataset("../celeba")
+X_imgs_train, X_attrs_train, Y_train = data.get_train_data()
+X_imgs_test, X_attrs_test, Y_test = data.get_test_data()
+
+# TODO 1: 特征选择
+# 方案1：选择属性特征作为分类依据
+X_train = X_attrs_train
+X_test = X_attrs_test
+# 方案2：选择原始图片作为分类依据（需要展平）
+X_train = X_imgs_train.reshape(X_imgs_train.shape[0], -1)
+X_test = X_imgs_test.reshape(X_imgs_test.shape[0], -1)
+
+# 标准化训练集和测试集
+sc = StandardScaler()
+sc.fit(X_train)
+X_train_std = sc.transform(X_train)
+X_test_std  = sc.transform(X_test)
+
+# TODO 2: 训练支持向量机（需要选择合适的 C 值）
+svm = SVC(kernel="linear", C=1.0)
+svm.fit(X_train_std, Y_train)
+
+# 预测与评估
+Y_pred = svm.predict(X_test_std)
+print('Accuracy: %.2f' % svm.score(X_test_std, Y_test))
+\end{lstlisting}
+
+\subsection{C 值网格搜索实现（plot\_c\_curve.py）}
+为了找到最优的 $C$ 值，我们编写了 \texttt{plot\_c\_curve.py} 脚本进行系统的网格搜索：
+
+\begin{lstlisting}[language=Python, caption=C 值网格搜索关键代码]
+# 根据特征类型定义不同的 C 值搜索范围
+if feature_type == 'attrs':
+    C_values = np.logspace(-3, 2, 100)  # 属性特征: [0.001, 100]
+elif feature_type == 'images':
+    C_values = np.logspace(-6, 0, 100)  # 原始图片: [1e-6, 1]
+
+# 对每个 C 值训练 SVM 并评估
+accuracies = []
+misclassified_counts = []
+for C in C_values:
+    svm = SVC(kernel="linear", C=C)
+    svm.fit(X_train_std, Y_train)
+    Y_pred = svm.predict(X_test_std)
+    
+    accuracy = svm.score(X_test_std, Y_test)
+    misclassified = (Y_test != Y_pred).sum()
+    
+    accuracies.append(accuracy)
+    misclassified_counts.append(misclassified)
+
+# 找到最优 C 值
+best_idx = np.argmax(accuracies)
+best_C = C_values[best_idx]
+best_accuracy = accuracies[best_idx]
+\end{lstlisting}
+
+该脚本会自动生成两张图表：错分样本数和准确率随 $C$ 值变化的曲线，帮助我们直观理解 $C$ 对模型性能的影响。
+
+\vspace{1em}
+
+% results summary table
+\begin{table}[H]
+    \centering
+    \caption{不同特征与最优 C 值下的实验结果汇总}
+    \begin{tabular}{lccc}
+    \toprule
+    \textbf{特征类型} & \textbf{特征维度} & \textbf{最优 C 值} & \textbf{测试准确率} \\
+    \midrule
+    属性特征 & 40 & $1.83 \times 10^{-2}$ & \textbf{92\%} \\
+    原始像素 & 116,412 & $2.48 \times 10^{-5}$ & \textbf{64\%} \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\vspace{0.5em}
+
+\section{实验结果}
+
+\subsection{惩罚参数 C 的优化}
+
+为了找到最佳的惩罚参数 $C$，我们在不同的 $C$ 值范围内进行了系统的网格搜索（对数尺度，共 100 个采样点）。两种特征类型的搜索范围和最优结果如表 1 所示。
+
+\subsubsection{属性特征实验结果}
+
+对于 40 维的属性特征，我们在 $C \in [10^{-3}, 10^{2}]$ 范围内搜索。结果显示最佳 $C = 1.83 \times 10^{-2}$，此时测试准确率达到 \textbf{92\%}（50 个测试样本中仅 4 个错分）。图 \ref{fig:terminal_attrs} 展示了使用最优 $C$ 值运行 \texttt{svm.py} 的终端输出。
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[width=0.4\textwidth]{terminal_attrs.png}}
+    \caption{属性特征在最优 C 值（$1.83 \times 10^{-2}$）下的运行结果}
+    \label{fig:terminal_attrs}
+\end{figure}
+
+\subsubsection{原始像素特征实验结果}
+
+对于 116,412 维的原始像素特征，我们在 $C \in [10^{-6}, 1]$ 范围内搜索。结果显示最佳 $C = 2.48 \times 10^{-5}$，此时测试准确率为 \textbf{64\%}（50 个测试样本中 18 个错分）。图 \ref{fig:terminal_images} 展示了使用最优 $C$ 值运行 \texttt{svm.py} 的终端输出。
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[width=0.4\textwidth]{terminal_images.png}}
+    \caption{原始像素特征在最优 C 值（$2.48 \times 10^{-5}$）下的运行结果}
+    \label{fig:terminal_images}
+\end{figure}
+
+\subsection{C 值变化曲线分析}
+
+图 \ref{fig:c_attrs} 和图 \ref{fig:c_images} 展示了测试准确率和错分样本数随 $C$ 值变化的完整趋势。从曲线可以清晰地观察到最优 $C$ 值的位置以及过拟合/欠拟合的区域。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../log/c_value_curves_attrs.png}
+    \caption{属性特征：准确率与错分样本数随 C 值的变化曲线}
+    \label{fig:c_attrs}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../log/c_value_curves_images.png}
+    \caption{原始像素特征：准确率与错分样本数随 C 值的变化曲线}
+    \label{fig:c_images}
+\end{figure}
+
+\subsection{结果分析}
+
+\subsubsection{软间隔与 C 值的理论分析}
+
+在线性不可分的情况下，SVM 引入松弛变量 $\xi_i \geq 0$ 允许部分样本违反间隔约束，目标函数为：
+\begin{equation}
+\min_{w,b,\xi} \frac{1}{2}\|w\|^2 + C\sum_{i=1}^{n}\xi_i
+\end{equation}
+
+\noindent 其中 $C > 0$ 是惩罚参数，控制\textbf{间隔最大化}与\textbf{分类错误惩罚}之间的权衡：
+
+\begin{itemize}
+    \item \textbf{C 值较小}：更重视间隔最大化（$\|w\|^2$ 项），允许更多训练样本被错分或落入间隔内，模型更平滑，泛化能力强，但可能\textbf{欠拟合}
+    
+    \item \textbf{C 值较大}：更重视减少训练误差（$\sum\xi_i$ 项），强制模型正确分类更多训练样本，在训练集上表现好，但可能导致\textbf{过拟合}
+\end{itemize}
+
+\vspace{0.5em}
+因此，$C$ 值的选择需要在偏差-方差之间取得平衡，这正是我们通过网格搜索寻找最优 $C$ 的原因。
+
+\subsubsection{实验结果的具体分析}
+\begin{enumerate}
+    \item \textbf{属性特征表现更优}：尽管维度远低于原始像素（40 vs 116412），属性特征达到了 92\% 的准确率，显著优于原始像素的 64\%。这说明手工设计的属性特征（如面部特征点、纹理等）包含了更强的判别信息，而原始像素包含大量冗余。
+    
+    \item \textbf{最优 C 值差异显著}：
+    \begin{itemize}
+        \item 属性特征的最优 $C = 1.83 \times 10^{-2}$（较大）：低维特征空间不易过拟合，可以使用较大的 $C$ 值来减少训练误差。
+        \item 原始像素的最优 $C = 2.48 \times 10^{-5}$（很小）：高维特征空间（116412 维）极易过拟合，必须使用很小的 $C$ 值施加强正则化，优先保证模型的泛化能力。
+    \end{itemize}
+    
+    \item \textbf{C 值变化趋势}：
+    \begin{itemize}
+        \item 从图 \ref{fig:c_images} 可以看出，当 $C < 10^{-5}$ 时，模型欠拟合（准确率仅 30\%--40\%）；
+        \item 当 $C \approx 2.5 \times 10^{-5}$ 时达到最优（64\%）；
+        \item 当 $C > 10^{-4}$ 时，准确率略有下降，表明开始过拟合训练集。
+    \end{itemize}
+    
+    \item \textbf{维度灾难}：原始像素的 116412 维特征空间远超训练样本数（250），导致严重的维度灾难。在这种情况下，SVM 需要极强的正则化（小 $C$）才能避免过拟合，但即使如此，准确率仍然受限。
+\end{enumerate}
+
+\section{改进方案与建议}
+
+基于实验结果和分析，针对原始像素特征性能受限的问题，查阅资料后提出以下可行改进方案：
+
+\begin{enumerate}
+    \item \textbf{使用深度学习特征}：采用预训练卷积神经网络（如 ResNet18、VGG16）提取中间层特征（典型维度 512--2048），然后在这些语义化特征向量上训练 SVM。深度特征通常能显著提升准确率（预期可达 85\%+）。
+    
+    \item \textbf{PCA 降维}：使用主成分分析将原始像素从 116,412 维降至 200--1000 维，保留主要方差的同时去除噪声，加速训练并改善泛化。
+    
+    \item \textbf{尝试非线性核函数}：使用 RBF 核（$K(x_i, x_j) = \exp(-\gamma \|x_i - x_j\|^2)$）捕捉非线性关系，同时对 $C$ 和 $\gamma$ 进行联合网格搜索。
+    
+    \item \textbf{数据增强}：对训练图像进行旋转、翻转、亮度调整等增强操作，扩充训练集规模，提升模型鲁棒性。
+    
+    \item \textbf{处理类别不均衡}：如果存在类别样本数差异，使用 \texttt{class\_weight='balanced'} 自动调整权重。
+\end{enumerate}
+
+\section{实验结论}
+
+本次实验系统地研究了基于 SVM 的人脸图像分类问题，完成了以下工作：
+
+\begin{enumerate}
+    \item \textbf{实现了两种特征的 SVM 分类器}：基于属性特征（40 维）和原始像素特征（116,412 维）的线性 SVM，并通过标准化预处理提升了模型性能。
+    
+    \item \textbf{优化了惩罚参数 $C$}：通过对数尺度网格搜索（100 个采样点），找到了两种特征的最优 $C$ 值：
+    \begin{itemize}
+        \item 属性特征：$C = 1.83 \times 10^{-2}$，准确率 \textbf{92\%}
+        \item 原始像素：$C = 2.48 \times 10^{-5}$，准确率 64\%
+    \end{itemize}
+    
+    \item \textbf{分析了软间隔原理与 $C$ 值的关系}：验证了 $C$ 值控制偏差-方差权衡的理论，解释了不同特征下最优 $C$ 值差异巨大的原因（高维空间需要更强正则化）。
+    
+    \item \textbf{揭示了特征表示的重要性}：尽管属性特征维度远低于原始像素（40 vs 116,412），但其准确率显著更高（92\% vs 64\%），说明\textbf{特征工程比盲目使用高维原始特征更重要}。
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent 实验结果表明：在高维特征空间（如原始像素）中，样本数远少于特征维度时，模型容易陷入维度灾难。要突破 64\% 的准确率瓶颈，需要采用降维技术（PCA）或深度学习特征提取方法。
+
+\end{document}
