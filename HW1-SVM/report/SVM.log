@@ -1,10 +1,10 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.10.12)  15 OCT 2025 00:12
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.10.12)  15 OCT 2025 10:41
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**d:/75128/Desktop/模式识别与机器学习/作业/PRML-Assignments/HW1-SVM/report/SVM
-(d:/75128/Desktop/模式识别与机器学习/作业/PRML-Assignments/HW1-SVM/report/SVM.tex
+**d:/75128/Desktop/模式识别与机器学习/作业/编程小作业/PRML-Assignments/HW1-SVM/report/SVM
+(d:/75128/Desktop/模式识别与机器学习/作业/编程小作业/PRML-Assignments/HW1-SVM/report/SVM.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
 (d:/texlive/2024/texmf-dist/tex/latex/ctex/ctexart.cls (d:/texlive/2024/texmf-dist/tex/latex/ctex/config/ctexbackend.cfg
@@ -806,8 +806,7 @@ Package: bm 2023/07/08 v1.2f Bold Symbol Support (DPC/FMi)
 \symboldsymbols=\mathgroup6
 Package bm Info: No bold for \OMX/cmex/m/n, using \pmb.
 LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 149.
-)
-No file SVM.aux.
+) (./SVM.aux)
 \openout1 = `SVM.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 53.
@@ -883,6 +882,7 @@ LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 (Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 53.
 \c@lstlisting=\count376
+
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
 *geometry* verbose mode - [ preamble ] result:
@@ -1003,13 +1003,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.64723pt}.
 
 [2]
-
-LaTeX Warning: Reference `fig:terminal_attrs' on page 3 undefined on input line 214.
-
 File: terminal_attrs.png Graphic file (type bmp)
 <terminal_attrs.png>
-
-LaTeX Warning: Reference `fig:terminal_images' on page 3 undefined on input line 225.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1021,17 +1016,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 [3]
 File: terminal_images.png Graphic file (type bmp)
 <terminal_images.png>
-
-
-LaTeX Warning: Reference `fig:c_attrs' on page 4 undefined on input line 236.
-
-
-LaTeX Warning: Reference `fig:c_images' on page 4 undefined on input line 236.
-
 File: ../log/c_value_curves_attrs.png Graphic file (type bmp)
 <../log/c_value_curves_attrs.png>
 File: ../log/c_value_curves_images.png Graphic file (type bmp)
 <../log/c_value_curves_images.png>
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 12.64723pt, for example:
@@ -1040,9 +1029,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.64723pt}.
 
 [4]
-
-LaTeX Warning: Reference `fig:c_images' on page 5 undefined on input line 284.
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 12.64723pt, for example:
@@ -1071,20 +1057,14 @@ LaTeX Font Warning: Size substitutions with differences
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
- 33588 strings out of 476720
- 883253 string characters out of 5801443
+ 33591 strings out of 476720
+ 883307 string characters out of 5801443
  2193842 words of memory out of 5000000
- 55043 multiletter control sequences out of 15000+600000
+ 55044 multiletter control sequences out of 15000+600000
  570670 words of font info for 116 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 103i,12n,106p,1247b,1893s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 103i,12n,106p,1253b,1893s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 Output written on SVM.pdf (7 pages).
