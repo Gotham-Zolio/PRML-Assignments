@@ -14,7 +14,7 @@
 ```
 PRML-Assignments/
 ├── HW1-SVM/                    # 作业1：支持向量机
-├── HW2-XXX/                    # 作业2：待更新
+├── HW2-DecisionTree/           # 作业2：决策树分类
 ├── HW3-XXX/                    # 作业3：待更新
 └── README.md                   # 本文件
 ```
@@ -77,16 +77,48 @@ python plot_c_curve.py attrs     # C 值优化曲线
 
 ---
 
-### 🔲 HW2-XXX：待更新
+### ✅ HW2-DecisionTree：决策树分类
 
-**任务**：TBD
+**任务**：实现 ID3、C4.5、CART 决策树算法，并在 Melon 和 CelebA 数据集上对比预剪枝与后剪枝策略
 
-**关键内容**：TBD
+**关键内容**：
+
+- 三种决策树算法实现（信息增益、信息增益率、基尼指数）
+- 预剪枝和后剪枝策略实现
+- 不同算法和剪枝策略的性能对比
+- 决策树结构可视化
+
+**主要结果**：
+
+- **Melon 数据集**：剪枝将准确率从 42.86% 提升至 71.43%（提升 67%）
+- **CelebA 数据集**（10 类人脸识别，250 训练样本）：
+  - ID3 + 后剪枝：**86%**（最优）
+  - C4.5 + 后剪枝：84%
+  - CART + 后剪枝：84%
+- **关键发现**：
+  - 后剪枝显著优于预剪枝（大数据集上提升 10-16%）
+  - ID3 和 CART 特征选择一致（均选 Male），验证了信息增益与基尼指数的等价性
+  - C4.5 通过 IV 修正特征偏好，选择了不同特征但性能略逊
 
 **快速运行**：
+
 ```bash
-# 待补充
+cd HW2-DecisionTree/code
+# Melon 数据集实验
+python tree.py ../melon 1 0      # ID3 不剪枝
+python tree.py ../melon 1 1      # ID3 预剪枝
+python tree.py ../melon 1 2      # ID3 后剪枝
+
+# CelebA 数据集实验（算法编号：1=ID3, 2=C4.5, 3=CART）
+python tree.py ../celeba 1 1     # ID3 预剪枝
+python tree.py ../celeba 1 2     # ID3 后剪枝
+python tree.py ../celeba 2 1     # C4.5 预剪枝
+python tree.py ../celeba 2 2     # C4.5 后剪枝
+python tree.py ../celeba 3 1     # CART 预剪枝
+python tree.py ../celeba 3 2     # CART 后剪枝
 ```
+
+**报告位置**：`HW2-DecisionTree/report/DecisionTree.pdf`
 
 ---
 
@@ -125,7 +157,7 @@ pdflatex report.tex
 | 作业 | 状态 | 完成日期 | 准确率/得分 |
 |-----|------|---------|-----------|
 | HW1-SVM | ✅ 已完成 | 2025-10-15 | 92% (属性) / 64% (像素) |
-| HW2-XXX | ⏳ 待完成 | - | - |
+| HW2-DecisionTree | ✅ 已完成 | 2025-10-21 | 86% (ID3) / 84% (C4.5/CART) |
 | HW3-XXX | ⏳ 待完成 | - | - |
 
 ## 📝 使用说明
@@ -176,4 +208,4 @@ pdflatex report.tex
 
 ---
 
-**Last Updated**: 2025-10-15
+**Last Updated**: 2025-10-21
